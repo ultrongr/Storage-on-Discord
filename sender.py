@@ -21,6 +21,7 @@ async def on_ready():
     outputs = file_handling.convert_to_txt_limit(input_file, input_file.split(".")[0], 24_000_000)
     print(outputs)
     for output in outputs:
+
         await channel.send(file=discord.File(output))
         os.remove(output)
 
