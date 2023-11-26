@@ -15,6 +15,7 @@ output_file = "example_output.mp4"
 
 @client.event
 async def on_ready():
+    time1=time.time()
     guild = client.get_guild(1178077426446762085)
     channel = client.get_channel(1178077609251323924)
     outputs = file_handling.convert_to_txt_limit(input_file, input_file.split(".")[0], 24_000_000)
@@ -23,8 +24,9 @@ async def on_ready():
         await channel.send(file=discord.File(output))
         os.remove(output)
 
-    print("finished")
-    # await thread.send("Hello there")
+    print(f"Sent in {time.time()-time1} seconds.")
+    exit(0)
+
 
 
 @client.event
