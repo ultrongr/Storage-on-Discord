@@ -24,6 +24,7 @@ def convert_to_txt(input_file, output_file):
 def convert_to_txt_limit(input_file, output_file, limit):
     try:
         size = os.path.getsize(input_file)
+        # print(size, input_file)
         read = 0
         out = []
         counter = 0

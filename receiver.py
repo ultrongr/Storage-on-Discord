@@ -10,18 +10,19 @@ token = tokens.ultron_bot_v1
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
-input_file = "example2.mp4"
+input_file = "example3.mp4"
 
 
 @client.event
 async def on_ready():
     time1 = time.time()
-    guild = client.get_guild(1178077426446762085)
     channel = client.get_channel(1178718273114755195)
+    dict_messages = []
 
     thread_id = None
-    async for msg in channel.history(limit=10000):
-        for att in msg.attachments:
+    async for dict_message in channel.history(limit=10000):
+        for att in dict_message.attachments:
+            dict_messages.append(att.filename)
             with open(att.filename, "wb") as file:
                 await att.save(file)
             with open(att.filename, "r") as file:
@@ -29,6 +30,8 @@ async def on_ready():
                 if input_file in data:
                     thread_id = data[input_file]
                     break
+    for filename in dict_messages:
+        os.remove(filename)
 
     if not thread_id:
         print("Couldnt find a file with thar name!")

@@ -10,13 +10,12 @@ token = tokens.ultron_bot_v1
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
-input_file = "example2.mp4"
+input_file = "example3.mp4"
 
 
 @client.event
 async def on_ready():
     time1 = time.time()
-    guild = client.get_guild(1178077426446762085)
     channel = client.get_channel(1178718273114755195)
     dict_messages = []
     dict_filenames = []
