@@ -4,19 +4,20 @@ import file_handling
 import time
 import os
 import json
+import ids
 
 token = tokens.ultron_bot_v1
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 
-input_file = "example3.mp4"
+file_to_upload = "6th semester"
 
 
 @client.event
 async def on_ready():
     time1 = time.time()
-    channel = client.get_channel(1178718273114755195)
+    channel = client.get_channel(ids.channels["storage-0"])
     dict_messages = []
     dict_filenames = []
     thread_id = False
@@ -40,8 +41,8 @@ async def on_ready():
                 await att.save(file)
             with open(att.filename, "r") as file:
                 data = json.load(file)
-                if input_file in data:
-                    thread_id = data[input_file]
+                if file_to_upload in data:
+                    thread_id = data[file_to_upload]
                     break
 
     if thread_id:
@@ -52,7 +53,7 @@ async def on_ready():
         # thread = await channel.fetch_thread(thread_id)
 
     thread = await channel.create_thread(
-        name=input_file,
+        name=file_to_upload,
         # autoarchive_duration=60,
     )
 
@@ -64,18 +65,28 @@ async def on_ready():
         with open(new_dict_name, "r") as file:
             new_dict = json.load(file)
         await dict_messages[0].delete()
-    new_dict[input_file] = thread.id
+    new_dict[file_to_upload] = thread.id
     with open(new_dict_name, "w") as file:
         json.dump(new_dict, file)
     await channel.send(file=discord.File(new_dict_name))
     os.remove(new_dict_name)
 
-    outputs = file_handling.convert_to_txt_limit(input_file, input_file, 24_000_000)
-    print(outputs)
-    for output in outputs:
-        await thread.send(file=discord.File(output))
-        os.remove(output)
-
+    if os.path.isfile(file_to_upload):
+        outputs = file_handling.convert_to_txt_limit(file_to_upload, file_to_upload, 24_000_000)
+        for output in outputs:
+            await thread.send(output, file=discord.File(output, filename = "file"))
+            os.remove(output)
+    elif os.path.isdir(file_to_upload):
+        for root, dirs, files in os.walk(file_to_upload+"\\", topdown=False):
+            for name in files:
+                file_to_upload_path = os.path.join(root, name).replace("\\", "/")
+                outputs = file_handling.convert_to_txt_limit(file_to_upload_path, file_to_upload_path, 24_000_000)
+                for output in outputs:
+                    await thread.send(output, file=discord.File(output, filename = "file"))
+                    os.remove(output)
+    else:
+        print("Error: Input file is neither a file nor a directory!")
+        return
     print(f"Sent in {time.time() - time1} seconds.")
     return
 
