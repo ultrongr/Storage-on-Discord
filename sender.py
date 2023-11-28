@@ -85,6 +85,7 @@ async def on_ready():
         for output in outputs:
             await thread.send(output, file=discord.File(output, filename = "file"))
             os.remove(output)
+
     elif os.path.isdir(file_to_upload):
         for root, dirs, files in os.walk(file_to_upload+"\\", topdown=False):
             for name in files:

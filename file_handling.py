@@ -44,6 +44,8 @@ def convert_to_original_limit(output_file, input_file):
 
 def create_path(file_path, valid_paths):
     new_path = "/".join(file_path.split("/")[:-1])
+    if new_path in valid_paths:
+        return
     dirs = new_path.split("/")
     intermediate_path = ""
     while intermediate_path != new_path:
